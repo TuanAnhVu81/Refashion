@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,13 +24,11 @@ public class Orders {
     @JoinColumn(name = "buyer_id")
     Users buyer;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    Users seller;
+    @Column(name = "total_amount", nullable = false)
+    BigDecimal totalAmount;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    Products product;
+    @Column(name = "shipping_address", nullable = false)
+    String shippingAddress;
 
     @Column(name = "status")
     String status;

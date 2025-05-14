@@ -28,7 +28,7 @@ public class Users {
     @Column(name = "password_hash", nullable = false)
     String passwordHash;
 
-    @Column(name = "role", columnDefinition = "VARCHAR(20) CHECK (role IN ('buyer', 'seller', 'admin')) DEFAULT 'buyer'")
+    @Column(name = "role", columnDefinition = "VARCHAR(20) CHECK (role IN ('buyer', 'seller', 'admin'))")
     String role;
 
     @Column(name = "full_name")
