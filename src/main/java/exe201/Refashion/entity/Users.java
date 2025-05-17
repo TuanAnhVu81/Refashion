@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "Users")
 public class Users {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     String id;
 
@@ -25,11 +26,12 @@ public class Users {
     @Column(name = "email", unique = true, nullable = false)
     String email;
 
-    @Column(name = "password_hash", nullable = false)
-    String passwordHash;
+    @Column(name = "password", nullable = false)
+    String password;
 
-    @Column(name = "role", columnDefinition = "VARCHAR(20) CHECK (role IN ('buyer', 'seller', 'admin'))")
-    String role;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    Role role;
 
     @Column(name = "full_name")
     String fullName;
@@ -45,4 +47,19 @@ public class Users {
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
+
+    @Column(name = "verification_token")
+    String verificationToken;
+
+    Boolean emailVerified;
+    Boolean active;
+    @PrePersist
+    protected void onCreate() {
+        if (active == null) {
+            active = true;
+        }
+        if (emailVerified == null) {
+            emailVerified = false;  // Mặc định chưa xác thực
+        }
+    }
 }
