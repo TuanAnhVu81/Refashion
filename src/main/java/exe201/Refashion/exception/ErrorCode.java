@@ -11,6 +11,8 @@ public enum ErrorCode {
     UNAUTHENTICATED(1007, "Unauthenticated"),
     EMAIL_NOT_PROVIDED(1008, "You need to provide email"),
     ROLE_NOT_FOUND(1009, "Role not found"),
+    INVALID_RESET_PASSWORD_TOKEN(1010, "Invalid reset password token"),
+    RESET_PASSWORD_TOKEN_EXPIRED(1011, "Reset password token expired"),
     ;
 
     ErrorCode(int code, String message) {

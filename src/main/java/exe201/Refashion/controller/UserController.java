@@ -91,4 +91,24 @@ public class UserController {
                 """;
         }
     }
+
+    @PostMapping("/forgot-password")
+    public ApiResponse<String> forgotPassword(@RequestParam String email) {
+        userService.createPasswordResetToken(email);
+        return ApiResponse.<String>builder()
+                .result("Đã gửi email đặt lại mật khẩu nếu email tồn tại trong hệ thống.")
+                .build();
+    }
+
+    @PostMapping("/reset-password")
+    public ApiResponse<String> resetPassword(
+            @RequestParam String token,
+            @RequestParam String newPassword
+    ) {
+        userService.resetPassword(token, newPassword);
+        return ApiResponse.<String>builder()
+                .result("Mật khẩu đã được đặt lại thành công.")
+                .build();
+    }
+
 }
