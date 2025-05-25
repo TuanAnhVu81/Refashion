@@ -15,7 +15,8 @@ public interface ProductRepository extends CrudRepository<Products, String> {
 
     List<Products> findBySellerId(String sellerId);
 
-    @Query("SELECT p FROM Products p WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) ORDER BY " +
+    @Query("SELECT p FROM Products p WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "ORDER BY CASE WHEN (p.isFeatured = true AND (p.featuredUntil IS NULL OR p.featuredUntil > CURRENT_TIMESTAMP)) THEN 1 ELSE 0 END DESC, " +
             "CASE WHEN :sortBy = 'category.name' THEN p.category.name END ASC, " +
             "CASE WHEN :sortBy = 'category.name' AND :sortDirection = 'desc' THEN p.category.name END DESC, " +
             "CASE WHEN :sortBy = 'price' THEN p.price END ASC, " +

@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -22,6 +23,8 @@ public class ProductRequest {
     BigDecimal price;
     String categoryId;
     String sellerId;
+    Boolean isFeatured;
+    LocalDateTime featuredUntil; // Thêm trường mới
     Boolean isActive;
     MultipartFile imageFile; // Upload ảnh
 }

@@ -63,11 +63,20 @@ public class Products {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ProductImages> images;
 
+    @Column(name = "is_featured", nullable = false)
+    Boolean isFeatured;
+
+    @Column(name = "featured_until") // Thời gian hết hạn nổi bật
+    LocalDateTime featuredUntil;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
         if (isActive == null) {
             isActive = true;
+        }
+        if (isFeatured == null) {
+            isFeatured = false;
         }
     }
 }

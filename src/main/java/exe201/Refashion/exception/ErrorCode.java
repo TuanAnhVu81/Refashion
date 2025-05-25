@@ -20,6 +20,8 @@ public enum ErrorCode {
     UPLOAD_IMAGE_FAIL(1016, " Upload image failed"),
     PRODUCT_ALREADY_IN_WISHLIST(1017, " Product already in Wishlist"),
     WISHLIST_NOT_FOUND(1018, "Wishlist not found"),
+    UNAUTHORIZED(1019, "User not own the product"),
+    INVALID_PAYMENT_AMOUNT(1020, "Invalid payment amount"),
     ;
 
     ErrorCode(int code, String message) {
