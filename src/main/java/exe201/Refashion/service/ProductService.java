@@ -2,74 +2,84 @@ package exe201.Refashion.service;
 
 import exe201.Refashion.dto.request.ProductRequest;
 import exe201.Refashion.dto.response.ProductResponse;
-import exe201.Refashion.entity.Categories;
-import exe201.Refashion.entity.ProductImages;
-import exe201.Refashion.entity.Products;
-import exe201.Refashion.entity.Users;
+import exe201.Refashion.entity.*;
+import exe201.Refashion.exception.AppException;
+import exe201.Refashion.exception.ErrorCode;
 import exe201.Refashion.mapper.ProductMapper;
-import exe201.Refashion.repository.CategoryRepository;
-import exe201.Refashion.repository.ProductImagesRepository;
-import exe201.Refashion.repository.ProductRepository;
-import exe201.Refashion.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import exe201.Refashion.repository.*;
 
-import java.math.BigDecimal;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.AccessLevel;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
-@Transactional
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductService {
 
-    private final ProductRepository productRepository;
-    private final ProductImagesRepository productImagesRepository;
-    private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
-    private final ProductMapper productMapper;
+    ProductRepository productRepository;
+    CategoryRepository categoryRepository;
+    UserRepository userRepository;
+    ProductMapper productMapper;
+
+//    String uploadDir = "E:\\SEMESTER 8\\EXE201\\BE\\uploads\\products\\";
+    String uploadDir = System.getProperty("user.dir") + "/uploads/products/";
 
     public ProductResponse createProduct(ProductRequest request) {
-        Products product = productMapper.toEntity(request);
+        try {
+            Categories category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
-        Users seller = userRepository.findById(request.getSellerId())
-                .orElseThrow(() -> new RuntimeException("Seller không tồn tại"));
-        product.setSeller(seller);
+            Users seller = userRepository.findById(request.getSellerId())
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        Categories category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category không tồn tại"));
-        product.setCategory(category);
+            // KHÔNG cần tự gán id thủ công ở đây vì đã dùng @GeneratedValue
+            Products product = Products.builder()
+                    .title(request.getTitle())
+                    .description(request.getDescription())
+                    .brand(request.getBrand())
+                    .productCondition(request.getProductCondition())
+                    .size(request.getSize())
+                    .color(request.getColor())
+                    .price(request.getPrice())
+                    .category(category)
+                    .seller(seller)
+                    .isActive(request.getIsActive() != null ? request.getIsActive() : true)
+                    .images(new ArrayList<>())
+                    .build();
 
-        product.setId(UUID.randomUUID().toString());
-        product.setCreatedAt(LocalDateTime.now());
-        product.setIsActive(true);
+            // Lưu product trước để có ID (nếu cần dùng cho ảnh)
+            product = productRepository.save(product);
 
-        productRepository.save(product);
+            // Upload ảnh
+            uploadProductImage(request.getImageFile(), product);
 
-        List<ProductImages> images = request.getImageUrls().stream()
-                .map(url -> {
-                    ProductImages img = new ProductImages();
-                    img.setId(UUID.randomUUID().toString());
-                    img.setProduct(product);
-                    img.setImageUrl(url);
-                    return img;
-                }).collect(Collectors.toList());
-        productImagesRepository.saveAll(images);
+            // Lưu lại product với ảnh
+            product = productRepository.save(product);
 
-        ProductResponse response = productMapper.toResponse(product);
-        response.setImageUrls(images.stream().map(ProductImages::getImageUrl).collect(Collectors.toList()));
+            return productMapper.toProductResponse(product);
 
-        return response;
+        } catch (Exception e) {
+            System.err.println("Error creating product: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error creating product: " + e.getMessage(), e);
+        }
     }
 
-    public ProductResponse updateProduct(String productId, ProductRequest request) {
-        Products product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product không tồn tại"));
+    public ProductResponse updateProduct(String id, ProductRequest request) {
+        Products product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         product.setTitle(request.getTitle());
         product.setDescription(request.getDescription());
@@ -77,70 +87,75 @@ public class ProductService {
         product.setProductCondition(request.getProductCondition());
         product.setSize(request.getSize());
         product.setColor(request.getColor());
-        product.setPrice(new BigDecimal(request.getPrice()));
+        product.setPrice(request.getPrice());
+        product.setIsActive(request.getIsActive());
 
-        if (!product.getSeller().getId().equals(request.getSellerId())) {
-            Users seller = userRepository.findById(request.getSellerId())
-                    .orElseThrow(() -> new RuntimeException("Seller không tồn tại"));
-            product.setSeller(seller);
-        }
+        uploadProductImage(request.getImageFile(), product);
 
-        if (!product.getCategory().getId().equals(request.getCategoryId())) {
-            Categories category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category không tồn tại"));
-            product.setCategory(category);
-        }
-
-        productRepository.save(product);
-
-        List<ProductImages> oldImages = productImagesRepository.findByProductId(productId);
-        productImagesRepository.deleteAll(oldImages);
-
-        List<ProductImages> newImages = request.getImageUrls().stream()
-                .map(url -> {
-                    ProductImages img = new ProductImages();
-                    img.setId(UUID.randomUUID().toString());
-                    img.setProduct(product);
-                    img.setImageUrl(url);
-                    return img;
-                }).collect(Collectors.toList());
-        productImagesRepository.saveAll(newImages);
-
-        ProductResponse response = productMapper.toResponse(product);
-        response.setImageUrls(newImages.stream().map(ProductImages::getImageUrl).collect(Collectors.toList()));
-
-        return response;
-    }
-
-    public ProductResponse getProductById(String productId) {
-        Products product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product không tồn tại"));
-        ProductResponse response = productMapper.toResponse(product);
-
-        List<ProductImages> images = productImagesRepository.findByProductId(productId);
-        response.setImageUrls(images.stream().map(ProductImages::getImageUrl).collect(Collectors.toList()));
-
-        return response;
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     public List<ProductResponse> getAllProducts() {
-        List<Products> products = productRepository.findAll();
-
-        return products.stream().map(product -> {
-            ProductResponse response = productMapper.toResponse(product);
-            List<ProductImages> images = productImagesRepository.findByProductId(product.getId());
-            response.setImageUrls(images.stream().map(ProductImages::getImageUrl).collect(Collectors.toList()));
-            return response;
-        }).collect(Collectors.toList());
+        return StreamSupport.stream(productRepository.findAll().spliterator(), false)
+                .map(productMapper::toProductResponse)
+                .toList();
     }
 
-    public void deleteProduct(String productId) {
-        Products product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product không tồn tại"));
+    public ProductResponse getProductById(String id) {
+        Products product = productRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        return productMapper.toProductResponse(product);
+    }
 
-        List<ProductImages> images = productImagesRepository.findByProductId(productId);
-        productImagesRepository.deleteAll(images);
+    public void deleteProduct(String id) {
+        if (!productRepository.existsById(id)) {
+            throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+        productRepository.deleteById(id);
+    }
+    
+    /**
+     * Tách logic upload ảnh ra riêng.
+     */
+    private void uploadProductImage(MultipartFile imageFile, Products product) {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = saveImage(imageFile, product.getId());
 
-        productRepository.delete(product);
+            ProductImages productImage = ProductImages.builder()
+                    .imageUrl(imageUrl)
+                    .product(product) // Gán product đang được quản lý
+                    .build();
+
+            product.getImages().add(productImage);
+        }
+    }
+
+    /**
+     * Lưu ảnh vào thư mục và trả về URL tương đối
+     */
+    private String saveImage(MultipartFile imageFile, String productId) {
+        try {
+            String sanitizedFileName = imageFile.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            String fileName = productId + "_" + sanitizedFileName;
+            File dest = new File(uploadDir + fileName);
+            dest.getParentFile().mkdirs(); // tạo thư mục nếu chưa có
+            System.out.println("File name: " + imageFile.getOriginalFilename());
+            System.out.println("File size: " + imageFile.getSize());
+            imageFile.transferTo(dest);
+            return "/uploads/products/" + fileName; // URL tương đối
+        } catch (IOException e) {
+            throw new AppException(ErrorCode.UPLOAD_IMAGE_FAIL);
+        }
+    }
+
+    public List<ProductResponse> searchAndSortProducts(String keyword, String sortBy, String sortDirection) {
+        Set<String> validSortFields = Set.of("category.name", "price", "size", "color", "productCondition");
+        if (sortBy == null || !validSortFields.contains(sortBy)) {
+            sortBy = "title"; // Default to title if sortBy is invalid
+        }
+
+        return productRepository.findAllCustom(keyword, sortBy, sortDirection).stream()
+                .map(productMapper::toProductResponse)
+                .toList();
     }
 }

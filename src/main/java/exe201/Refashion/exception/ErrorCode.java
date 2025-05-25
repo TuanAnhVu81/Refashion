@@ -13,6 +13,13 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(1009, "Role not found"),
     INVALID_RESET_PASSWORD_TOKEN(1010, "Invalid reset password token"),
     RESET_PASSWORD_TOKEN_EXPIRED(1011, "Reset password token expired"),
+    CATEGORY_NAME_EXISTED(1012,"Category name already existed"),
+    CATEGORY_NOT_FOUND(1013, "Category not found"),
+    USER_NOT_FOUND(1014, "User not found"),
+    PRODUCT_NOT_FOUND(1015, "Product not found"),
+    UPLOAD_IMAGE_FAIL(1016, " Upload image failed"),
+    PRODUCT_ALREADY_IN_WISHLIST(1017, " Product already in Wishlist"),
+    WISHLIST_NOT_FOUND(1018, "Wishlist not found"),
     ;
 
     ErrorCode(int code, String message) {

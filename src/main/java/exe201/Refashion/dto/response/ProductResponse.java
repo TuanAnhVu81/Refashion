@@ -1,9 +1,10 @@
 package exe201.Refashion.dto.response;
 
+import exe201.Refashion.enums.ProductCondition;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -11,14 +12,16 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductResponse {
     String id;
-    String sellerId;
     String title;
     String description;
-    String categoryId;
     String brand;
-    String productCondition;
+    ProductCondition productCondition;
     String size;
     String color;
     BigDecimal price;
-    List<String> imageUrls;
+    String imageUrl;
+    String categoryName;
+    String sellerUsername;
+    LocalDateTime createdAt;
+    Boolean isActive;
 }

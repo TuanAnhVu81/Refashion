@@ -1,11 +1,14 @@
 package exe201.Refashion.entity;
 
+import exe201.Refashion.enums.ProductCondition;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +20,8 @@ import java.time.LocalDateTime;
 @Table(name = "Products")
 public class Products {
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
     String id;
 
     @ManyToOne
@@ -37,8 +41,9 @@ public class Products {
     @Column(name = "brand")
     String brand;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "product_condition")
-    String productCondition;
+    ProductCondition productCondition;
 
     @Column(name = "size")
     String size;
@@ -54,4 +59,15 @@ public class Products {
 
     @Column(name = "is_active")
     Boolean isActive;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<ProductImages> images;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        if (isActive == null) {
+            isActive = true;
+        }
+    }
 }

@@ -1,23 +1,27 @@
 package exe201.Refashion.dto.request;
 
+import exe201.Refashion.entity.Categories;
+import exe201.Refashion.entity.Users;
+import exe201.Refashion.enums.ProductCondition;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRequest {
-    String sellerId;
     String title;
     String description;
-    String categoryId;
     String brand;
-    String productCondition;
+    ProductCondition productCondition;
     String size;
     String color;
-    String price;
-    List<String> imageUrls;  // Thêm trường này
-
+    BigDecimal price;
+    String categoryId;
+    String sellerId;
+    Boolean isActive;
+    MultipartFile imageFile; // Upload ảnh
 }

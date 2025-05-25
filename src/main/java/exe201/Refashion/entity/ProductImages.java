@@ -14,10 +14,11 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "ProductImages")
 public class ProductImages {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     Products product;
 

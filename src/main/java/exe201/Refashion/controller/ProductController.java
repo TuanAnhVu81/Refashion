@@ -3,13 +3,17 @@ package exe201.Refashion.controller;
 import exe201.Refashion.dto.request.ProductRequest;
 import exe201.Refashion.dto.response.ApiResponse;
 import exe201.Refashion.dto.response.ProductResponse;
+import exe201.Refashion.enums.ProductCondition;
 import exe201.Refashion.service.ProductService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -20,44 +24,70 @@ public class ProductController {
 
     ProductService productService;
 
-    @PostMapping
-    public ApiResponse<ProductResponse> createProduct(@RequestBody @Valid ProductRequest request) {
-        ProductResponse product = productService.createProduct(request);
+    @PostMapping(consumes = "multipart/form-data")
+    public ApiResponse<ProductResponse> createProduct(
+            @ModelAttribute @Valid ProductRequest request,
+            @RequestPart(name = "imageFile", required = false) MultipartFile imageFile
+    ) {
+        request.setImageFile(imageFile);
         return ApiResponse.<ProductResponse>builder()
-                .result(product)
-                .build();
-    }
-
-    @PutMapping("/{id}")
-    public ApiResponse<ProductResponse> updateProduct(@PathVariable("id") String id,
-                                                      @RequestBody @Valid ProductRequest request) {
-        ProductResponse product = productService.updateProduct(id, request);
-        return ApiResponse.<ProductResponse>builder()
-                .result(product)
-                .build();
-    }
-
-    @GetMapping("/{id}")
-    public ApiResponse<ProductResponse> getProduct(@PathVariable("id") String id) {
-        ProductResponse product = productService.getProductById(id);
-        return ApiResponse.<ProductResponse>builder()
-                .result(product)
+                .result(productService.createProduct(request))
                 .build();
     }
 
     @GetMapping
     public ApiResponse<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> products = productService.getAllProducts();
         return ApiResponse.<List<ProductResponse>>builder()
-                .result(products)
+                .result(productService.getAllProducts())
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<ProductResponse> getProduct(@PathVariable String id) {
+        return ApiResponse.<ProductResponse>builder()
+                .result(productService.getProductById(id))
+                .build();
+    }
+
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public ApiResponse<ProductResponse> updateProduct(
+            @PathVariable String id,
+            @ModelAttribute @Valid ProductRequest request,
+            @RequestPart(name = "imageFile", required = false) MultipartFile imageFile
+    ) {
+        request.setImageFile(imageFile);
+        return ApiResponse.<ProductResponse>builder()
+                .result(productService.updateProduct(id, request))
                 .build();
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteProduct(@PathVariable("id") String id) {
+    public ApiResponse<String> deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
-        return ApiResponse.<Void>builder()
-                .message("Xóa sản phẩm thành công")
+        return ApiResponse.<String>builder()
+                .result("Xóa sản phẩm thành công.")
+                .build();
+    }
+
+    @GetMapping("/conditions")
+    public ApiResponse<List<String>> getProductConditions() {
+        List<String> conditions = Arrays.stream(ProductCondition.values())
+                .map(Enum::name)
+                .toList();
+
+        return ApiResponse.<List<String>>builder()
+                .result(conditions)
+                .build();
+    }
+
+    @GetMapping("/search")
+    public ApiResponse<List<ProductResponse>> searchAndSortProducts(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "title") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection
+    ) {
+        return ApiResponse.<List<ProductResponse>>builder()
+                .result(productService.searchAndSortProducts(keyword, sortBy, sortDirection))
                 .build();
     }
 }

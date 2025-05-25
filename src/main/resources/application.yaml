@@ -27,3 +27,6 @@ spring:
             enable: true
   config:
     import: optional:classpath:application-secret.yaml
+  # Thêm cấu hình cho upload directory
+  app:
+    upload-dir: ${user.dir}/uploads/products/
