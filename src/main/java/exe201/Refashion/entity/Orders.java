@@ -1,6 +1,5 @@
 package exe201.Refashion.entity;
 
-import exe201.Refashion.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,9 +30,8 @@ public class Orders {
     @Column(name = "shipping_address", nullable = false)
     String shippingAddress;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    OrderStatus status;
+    String status;
 
     @Column(name = "payment_status")
     String paymentStatus;

@@ -138,6 +138,7 @@ public class ProductService {
             String sanitizedFileName = imageFile.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
             String fileName = productId + "_" + sanitizedFileName;
             File dest = new File(uploadDir + fileName);
+            System.out.println("Saving image to: " + dest.getAbsolutePath());
             dest.getParentFile().mkdirs(); // tạo thư mục nếu chưa có
             System.out.println("File name: " + imageFile.getOriginalFilename());
             System.out.println("File size: " + imageFile.getSize());
