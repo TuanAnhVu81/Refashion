@@ -11,6 +11,7 @@ public class UserCreationRequest {
     String username;
     String email;
     String password;
+    String confirmPassword; // <-- Thêm dòng này
     String fullName;
     String phoneNumber;
     String address;

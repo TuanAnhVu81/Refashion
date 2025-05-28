@@ -26,6 +26,8 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(1022, "Payment not found"),
     INVALID_STATUS_TRANSITION(1023, " Invalid status transition"),
     INVALID_ORDER_STATUS(1024, "Invalid order status"),
+    PASSWORD_CONFIRM_NOT_MATCH(1025, "Password confirm not match"),
+    INVALID_ROLE(1026, "Invalid role"),
     ;
 
     ErrorCode(int code, String message) {

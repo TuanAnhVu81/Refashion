@@ -14,6 +14,7 @@ public class UserUpdateRequest {
 
     String username;
     String password;
+    String confirmPassword; // <-- Thêm dòng này
     String fullName;
     String phoneNumber;
     String address;

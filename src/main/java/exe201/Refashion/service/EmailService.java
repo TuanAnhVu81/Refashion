@@ -15,7 +15,7 @@ public class EmailService {
     /**
      * Gửi email xác thực đến người dùng với link xác thực.
      *
-     * @param to              Địa chỉ email người nhận
+     * @param to                Địa chỉ email người nhận
      * @param verificationToken Token xác thực để tạo link
      * @throws MessagingException Nếu có lỗi khi gửi email
      */
@@ -29,7 +29,7 @@ public class EmailService {
         helper.setSubject("Xác Thực Email Của Bạn - Refashion");
 
         // Tạo link xác thực
-        String verificationLink = "http://localhost:8080/api/users/verify-email?token=" + verificationToken;
+        String verificationLink = "https://refashion-fqe8c7bfcgg5h0e7.southeastasia-01.azurewebsites.net/api/users/verify-email?token=" + verificationToken;
 
         // Nội dung HTML được định dạng đẹp và chuyên nghiệp
         String htmlContent = String.format("""
@@ -82,7 +82,7 @@ public class EmailService {
         helper.setFrom("tbinhduong0101@gmail.com"); // email của bạn
         helper.setSubject("Yêu Cầu Đặt Lại Mật Khẩu - Refashion");
 
-        String resetLink = "http://localhost:8080/reset-password?token=" + resetToken;
+        String resetLink = "https://refashion-fqe8c7bfcgg5h0e7.southeastasia-01.azurewebsites.net/api/reset-password?token=" + resetToken;
 
         String htmlContent = String.format("""
         <!DOCTYPE html>

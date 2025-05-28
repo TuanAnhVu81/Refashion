@@ -42,6 +42,15 @@ public class UserService {
         if (userRepository.existsByUsername(request.getUsername()))
             throw new AppException(ErrorCode.USER_EXIST);
 
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.PASSWORD_CONFIRM_NOT_MATCH);
+        }
+
+        // Chỉ cho phép roleId là 2 hoặc 3
+        if (!"2".equals(request.getRoleId()) && !"3".equals(request.getRoleId())) {
+            throw new AppException(ErrorCode.INVALID_ROLE);
+        }
+
         Users user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerified(false);
@@ -52,22 +61,19 @@ public class UserService {
         user.setRole(role);
 
         Users savedUser = userRepository.save(user);
-        // Tạo token xác thực
-        String verificationToken = java.util.UUID.randomUUID().toString();
+        String verificationToken = UUID.randomUUID().toString();
         savedUser.setVerificationToken(verificationToken);
+        savedUser = userRepository.save(savedUser);
 
-        // Lưu lại user với token
-        savedUser = userRepository.save(savedUser); // Lưu lại để cập nhật token
-
-        // Gửi email xác thực
         try {
             log.info("Attempting to send verification email to: {}", savedUser.getEmail());
             emailService.sendVerificationEmail(savedUser.getEmail(), verificationToken);
-        }catch(MessagingException e){
-                log.error("Failed to send verification email", e);
-                throw new RuntimeException(e);
-            }
-            return userMapper.toUserResponse(savedUser);
+        } catch (MessagingException e) {
+            log.error("Failed to send verification email", e);
+            throw new RuntimeException(e);
+        }
+
+        return userMapper.toUserResponse(savedUser);
     }
 
     public void verifyEmail(String token) {
