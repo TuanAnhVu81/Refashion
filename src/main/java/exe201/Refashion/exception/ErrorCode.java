@@ -22,6 +22,10 @@ public enum ErrorCode {
     WISHLIST_NOT_FOUND(1018, "Wishlist not found"),
     UNAUTHORIZED(1019, "User not own the product"),
     INVALID_PAYMENT_AMOUNT(1020, "Invalid payment amount"),
+    ORDER_NOT_FOUND(1021, "Order not found"),
+    PAYMENT_NOT_FOUND(1022, "Payment not found"),
+    INVALID_STATUS_TRANSITION(1023, " Invalid status transition"),
+    INVALID_ORDER_STATUS(1024, "Invalid order status"),
     ;
 
     ErrorCode(int code, String message) {

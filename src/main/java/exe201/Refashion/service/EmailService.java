@@ -26,7 +26,7 @@ public class EmailService {
         // Cấu hình thông tin cơ bản của email
         helper.setTo(to);
         helper.setFrom("tbinhduong0101@gmail.com"); // Thay bằng email của bạn
-        helper.setSubject("Xác Thực Email Của Bạn - Health Consultant System");
+        helper.setSubject("Xác Thực Email Của Bạn - Refashion");
 
         // Tạo link xác thực
         String verificationLink = "http://localhost:8080/api/users/verify-email?token=" + verificationToken;
@@ -47,12 +47,12 @@ public class EmailService {
             <body>
                 <div class="container">
                     <h3>Xin chào!</h3>
-                    <p>Cảm ơn bạn đã đăng ký tài khoản tại Health Consultant System. Vui lòng xác thực email của bạn bằng cách nhấn vào nút bên dưới:</p>
+                    <p>Cảm ơn bạn đã đăng ký tài khoản tại Refashion. Vui lòng xác thực email của bạn bằng cách nhấn vào nút bên dưới:</p>
                     <p><a href="%s" class="button">Xác Thực Email Ngay</a></p>
                     <p>Link này sẽ hết hạn sau <strong>24 giờ</strong>. Nếu bạn không thực hiện hành động này, bạn có thể yêu cầu một link xác thực mới.</p>
                     <p>Nếu bạn không đăng ký tài khoản, vui lòng bỏ qua email này.</p>
                     <div class="footer">
-                        <p>Trân trọng,<br>Đội ngũ Health Consultant System</p>
+                        <p>Trân trọng,<br>Đội ngũ Refashion</p>
                         <p>Email: tbinhduong0101@gmail.com</p>
                     </div>
                 </div>
@@ -80,7 +80,7 @@ public class EmailService {
 
         helper.setTo(to);
         helper.setFrom("tbinhduong0101@gmail.com"); // email của bạn
-        helper.setSubject("Yêu Cầu Đặt Lại Mật Khẩu - Health Consultant System");
+        helper.setSubject("Yêu Cầu Đặt Lại Mật Khẩu - Refashion");
 
         String resetLink = "http://localhost:8080/reset-password?token=" + resetToken;
 
@@ -99,12 +99,12 @@ public class EmailService {
         <body>
             <div class="container">
                 <h3>Xin chào!</h3>
-                <p>Bạn hoặc ai đó đã yêu cầu đặt lại mật khẩu cho tài khoản tại Health Consultant System.</p>
+                <p>Bạn hoặc ai đó đã yêu cầu đặt lại mật khẩu cho tài khoản tại Refashion.</p>
                 <p>Vui lòng nhấn vào nút bên dưới để tiến hành đặt lại mật khẩu:</p>
                 <p><a href="%s" class="button">Đặt Lại Mật Khẩu</a></p>
                 <p>Link này sẽ hết hạn sau <strong>30 phút</strong>. Nếu bạn không yêu cầu điều này, vui lòng bỏ qua email.</p>
                 <div class="footer">
-                    <p>Trân trọng,<br>Đội ngũ Health Consultant System</p>
+                    <p>Trân trọng,<br>Đội ngũ Refashion</p>
                     <p>Email: tbinhduong0101@gmail.com</p>
                 </div>
             </div>

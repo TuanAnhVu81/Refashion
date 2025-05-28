@@ -1,6 +1,7 @@
 package exe201.Refashion.service;
 
 import exe201.Refashion.dto.request.UserCreationRequest;
+import exe201.Refashion.dto.request.UserUpdateRequest;
 import exe201.Refashion.dto.response.UserResponse;
 import exe201.Refashion.entity.PasswordResetToken;
 import exe201.Refashion.entity.Role;
@@ -12,6 +13,7 @@ import exe201.Refashion.repository.PasswordResetTokenRepository;
 import exe201.Refashion.repository.RoleRepository;
 import exe201.Refashion.repository.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -116,4 +118,35 @@ public class UserService {
         tokenRepository.delete(resetToken); // Xóa token sau khi đã dùng
     }
 
+    public UserResponse getUserProfile(String userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        return userMapper.toUserResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateUserProfile(String userId, UserUpdateRequest request) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        // Cập nhật các trường nếu được cung cấp
+        if (request.getUsername() != null) {
+            user.setUsername(request.getUsername());
+        }
+        if (request.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        if (request.getFullName() != null) {
+            user.setFullName(request.getFullName());
+        }
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getAddress() != null) {
+            user.setAddress(request.getAddress());
+        }
+
+        user = userRepository.save(user);
+        return userMapper.toUserResponse(user);
+    }
 }

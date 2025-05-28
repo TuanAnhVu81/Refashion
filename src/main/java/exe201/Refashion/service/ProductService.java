@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -158,5 +159,20 @@ public class ProductService {
         return productRepository.findAllCustom(keyword, sortBy, sortDirection).stream()
                 .map(productMapper::toProductResponse)
                 .toList();
+    }
+
+    //Cho phép người bán xem danh sách sản phẩm của mình.
+    public List<ProductResponse> getProductsBySeller(String sellerId) {
+        // Kiểm tra xem seller có tồn tại không
+        userRepository.findById(sellerId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        // Lấy danh sách sản phẩm của seller
+        List<Products> products = productRepository.findBySellerId(sellerId);
+
+        // Ánh xạ sang ProductResponse
+        return products.stream()
+                .map(productMapper::toProductResponse)
+                .collect(Collectors.toList());
     }
 }

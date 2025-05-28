@@ -1,7 +1,10 @@
 package exe201.Refashion.entity;
 
 import exe201.Refashion.enums.OrderStatus;
+import exe201.Refashion.enums.PaymentStatus;
+import exe201.Refashion.enums.TransactionStatus;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -25,6 +28,10 @@ public class Orders {
     @JoinColumn(name = "buyer_id")
     Users buyer;
 
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    Users seller;
+
     @Column(name = "total_amount", nullable = false)
     BigDecimal totalAmount;
 
@@ -35,8 +42,10 @@ public class Orders {
     @Column(name = "status")
     OrderStatus status;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
-    String paymentStatus;
+    PaymentStatus paymentStatus;
+
 
     @Column(name = "delivery_tracking_number")
     String deliveryTrackingNumber;

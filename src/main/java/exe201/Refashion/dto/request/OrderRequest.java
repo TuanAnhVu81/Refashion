@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderRequest {
     String buyerId;
+    String sellerId;
     String shippingAddress;
     List<OrderItemRequest> items;
-    BigDecimal totalAmount;
 }

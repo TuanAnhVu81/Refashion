@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -49,4 +51,17 @@ public class OrderController {
                 .result(order)
                 .build();
     }
+    @PatchMapping("/{orderId}/status")
+    public ApiResponse<OrderResponse> updateOrderStatus(@PathVariable String orderId, @RequestParam String status) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.updateOrderStatus(orderId, status))
+                .build();
+    }
+    @GetMapping("/seller/{sellerId}")
+    public ApiResponse<List<OrderResponse>> getOrdersBySeller(@PathVariable String sellerId) {
+        return ApiResponse.<List<OrderResponse>>builder()
+                .result(orderService.getOrdersBySeller(sellerId))
+                .build();
+    }
+
 }

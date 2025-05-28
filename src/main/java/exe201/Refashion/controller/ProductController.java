@@ -90,4 +90,12 @@ public class ProductController {
                 .result(productService.searchAndSortProducts(keyword, sortBy, sortDirection))
                 .build();
     }
+
+    @GetMapping("/seller/{sellerId}")
+    public ApiResponse<List<ProductResponse>> getProductsBySeller(@PathVariable String sellerId) {
+        return ApiResponse.<List<ProductResponse>>builder()
+                .result(productService.getProductsBySeller(sellerId))
+                .build();
+    }
+
 }

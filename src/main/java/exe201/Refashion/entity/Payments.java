@@ -1,5 +1,6 @@
 package exe201.Refashion.entity;
 
+import exe201.Refashion.enums.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -38,4 +39,21 @@ public class Payments {
 
     @Column(name = "paid_at")
     LocalDateTime paidAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "escrow_status")
+    TransactionStatus escrowStatus;
+
+    @Column(name = "shipping_carrier")
+    String shippingCarrier;
+
+    @Column(name = "tracking_number")
+    String trackingNumber;
+
+    @Column(name = "delivered_at")
+    LocalDateTime deliveredAt;
+
+    @Column(name = "completed_at")
+    LocalDateTime completedAt;
+
 }

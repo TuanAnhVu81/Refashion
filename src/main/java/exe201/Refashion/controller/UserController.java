@@ -1,6 +1,7 @@
 package exe201.Refashion.controller;
 
 import exe201.Refashion.dto.request.UserCreationRequest;
+import exe201.Refashion.dto.request.UserUpdateRequest;
 import exe201.Refashion.dto.response.ApiResponse;
 import exe201.Refashion.dto.response.UserResponse;
 import exe201.Refashion.service.UserService;
@@ -111,4 +112,16 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/{userId}")
+    public ApiResponse<UserResponse> getUserProfile(@PathVariable String userId) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUserProfile(userId))
+                .build();
+    }
+    @PutMapping("/{userId}")
+    public ApiResponse<UserResponse> updateUserProfile(@PathVariable String userId, @RequestBody @Valid UserUpdateRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUserProfile(userId, request))
+                .build();
+    }
 }

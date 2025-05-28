@@ -1,6 +1,7 @@
 package exe201.Refashion.dto.response;
 
 import exe201.Refashion.enums.OrderStatus;
+import exe201.Refashion.enums.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +17,11 @@ import java.time.LocalDateTime;
 public class OrderResponse {
     String id;
     String buyerId;
+    String sellerId;
     BigDecimal totalAmount;
     String shippingAddress;
     OrderStatus status;
-    String paymentStatus;
+    PaymentStatus paymentStatus;
     String deliveryTrackingNumber;
     LocalDateTime createdAt;
 }

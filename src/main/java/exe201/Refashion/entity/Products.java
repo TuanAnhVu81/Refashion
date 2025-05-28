@@ -69,6 +69,9 @@ public class Products {
     @Column(name = "featured_until") // Thời gian hết hạn nổi bật
     LocalDateTime featuredUntil;
 
+    @Column(name = "is_sold")
+    Boolean isSold;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
@@ -77,6 +80,9 @@ public class Products {
         }
         if (isFeatured == null) {
             isFeatured = false;
+        }
+        if (isSold == null) {
+            isSold = false;
         }
     }
 }
