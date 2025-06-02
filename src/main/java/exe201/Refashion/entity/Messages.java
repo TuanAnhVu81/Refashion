@@ -35,4 +35,7 @@ public class Messages {
 
     @Column(name = "is_read")
     Boolean isRead;
+
+    @Column(name = "is_free")
+    Boolean isFree;
 }

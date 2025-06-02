@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemRequest {
-    String productId;
-    Integer quantity;
+public class MessageRequest {
+    String receiverId;
+    String message;
 }

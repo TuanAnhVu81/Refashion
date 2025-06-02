@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,9 +26,9 @@ public class ProductRequest {
     String categoryId;
     String sellerId;
     Boolean isFeatured;
-    LocalDateTime featuredUntil; // Thêm trường mới
+    LocalDateTime featuredUntil;
     Boolean isActive;
 
-    @JsonIgnore
-    MultipartFile imageFile; // Upload ảnh
+    List<String> imageUrls; // ✅ URL ảnh từ FE upload Cloudinary
 }
+

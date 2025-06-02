@@ -47,7 +47,7 @@ public class UserService {
         }
 
         // Chỉ cho phép roleId là 2 hoặc 3
-        if (!"2".equals(request.getRoleId()) && !"3".equals(request.getRoleId())) {
+        if (!"2".equals(request.getRoleId())) {
             throw new AppException(ErrorCode.INVALID_ROLE);
         }
 

@@ -26,12 +26,10 @@ public class ProductController {
 
     ProductService productService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ProductResponse> createProduct(
-            @ParameterObject @ModelAttribute @Valid ProductRequest request,
-            @RequestPart(name = "imageFile", required = false) MultipartFile imageFile
+            @RequestBody @Valid ProductRequest request
     ) {
-        request.setImageFile(imageFile);
         return ApiResponse.<ProductResponse>builder()
                 .result(productService.createProduct(request))
                 .build();
@@ -51,13 +49,11 @@ public class ProductController {
                 .build();
     }
 
-    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ProductResponse> updateProduct(
             @PathVariable String id,
-            @ModelAttribute @Valid ProductRequest request,
-            @RequestPart(name = "imageFile", required = false) MultipartFile imageFile
+            @RequestBody @Valid ProductRequest request
     ) {
-        request.setImageFile(imageFile);
         return ApiResponse.<ProductResponse>builder()
                 .result(productService.updateProduct(id, request))
                 .build();

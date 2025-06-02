@@ -3,8 +3,7 @@ package exe201.Refashion.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -30,10 +29,10 @@ public class Subscriptions {
     Integer messageLimit;
 
     @Column(name = "start_date")
-    LocalDate startDate;
+    LocalDateTime startDate;
 
     @Column(name = "end_date")
-    LocalDate endDate;
+    LocalDateTime endDate;
 
     @Column(name = "status")
     String status;
