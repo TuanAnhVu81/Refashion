@@ -103,7 +103,7 @@ public class ProductService {
     }
 
     public ProductResponse getProductById(String id) {
-        Products product = productRepository.findById(id)
+        Products product = productRepository.findWithImagesById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         return productMapper.toProductResponse(product);
     }

@@ -1,5 +1,6 @@
 package exe201.Refashion.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import exe201.Refashion.entity.Categories;
 import exe201.Refashion.entity.Users;
 import exe201.Refashion.enums.ProductCondition;
@@ -26,5 +27,7 @@ public class ProductRequest {
     Boolean isFeatured;
     LocalDateTime featuredUntil; // Thêm trường mới
     Boolean isActive;
+
+    @JsonIgnore
     MultipartFile imageFile; // Upload ảnh
 }

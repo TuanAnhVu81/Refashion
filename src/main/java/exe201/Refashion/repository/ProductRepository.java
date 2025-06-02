@@ -3,11 +3,13 @@ package exe201.Refashion.repository;
 import exe201.Refashion.entity.Categories;
 import exe201.Refashion.entity.Products;
 import exe201.Refashion.entity.Users;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Products, String> {
@@ -32,5 +34,8 @@ public interface ProductRepository extends CrudRepository<Products, String> {
 
     @Query("SELECT p FROM Products p WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Products> searchProducts(String keyword);
+
+    @EntityGraph(attributePaths = {"images"})
+    Optional<Products> findWithImagesById(String id);
 
 }

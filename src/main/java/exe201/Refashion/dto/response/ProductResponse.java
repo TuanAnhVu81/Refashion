@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,12 +21,11 @@ public class ProductResponse {
     String size;
     String color;
     BigDecimal price;
-    String imageUrl;
     String categoryName;
     String sellerUsername;
     Boolean isFeatured;
     LocalDateTime featuredUntil; // Thêm trường mới
-    MultipartFile imageFile; // Upload ảnh
+    List<String> imageUrls; // ✅ Đây là trường đúng cho response
     LocalDateTime createdAt;
     Boolean isActive;
 }

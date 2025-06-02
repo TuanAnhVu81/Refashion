@@ -69,6 +69,7 @@ public class AuthenticationService {
                 .token(token)
                 .authenticated(true)
                 .userId(user.getId())
+                .role(user.getRole())
                 .build();
     }
 
