@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemRequest {
-    String productId;
-    Integer quantity;
+public class ReportRequest {
+   String reportedUserId;
+   String reportedProductId;
+   String reason;
+   String description;
 }

@@ -24,12 +24,12 @@ public class Reports {
     Users reporter;
 
     @ManyToOne
-    @JoinColumn(name = "target_user_id")
-    Users targetUser;
+    @JoinColumn(name = "reported_user_id")
+    Users reportedUser;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    Products product;
+    @JoinColumn(name = "reported_product_id")
+    Products reportedProduct;
 
     @Column(name = "reason")
     String reason;
@@ -37,9 +37,9 @@ public class Reports {
     @Column(name = "description")
     String description;
 
-    @Column(name = "created_at")
-    LocalDateTime createdAt;
-
     @Column(name = "status")
     String status;
+
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
 }

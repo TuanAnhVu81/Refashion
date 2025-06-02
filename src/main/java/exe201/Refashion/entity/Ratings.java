@@ -3,6 +3,7 @@ package exe201.Refashion.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
