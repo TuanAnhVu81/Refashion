@@ -72,6 +72,9 @@ public class Products {
     @Column(name = "is_sold")
     Boolean isSold;
 
+    @ManyToMany(mappedBy = "products")
+    List<Blog> blogs;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
