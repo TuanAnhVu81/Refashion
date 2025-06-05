@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReportsRepository extends JpaRepository<Reports, String> {
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Reports r WHERE r.reporter.id = :reporterId " +
@@ -17,4 +19,7 @@ public interface ReportsRepository extends JpaRepository<Reports, String> {
             "AND r.reportedProduct.id = :reportedProductId")
     boolean existsByReporterIdAndReportedProductId(@Param("reporterId") String reporterId,
                                                    @Param("reportedProductId") String reportedProductId);
+
+    @Query("SELECT r FROM Reports r WHERE r.reportedProduct.id = :productId AND r.status = 'PENDING'")
+    List<Reports> findPendingReportsByProductId(@Param("productId") String productId);
 }
