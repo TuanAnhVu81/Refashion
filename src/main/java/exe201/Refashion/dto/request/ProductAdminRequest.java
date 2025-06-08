@@ -1,5 +1,6 @@
 package exe201.Refashion.dto.request;
 
+import exe201.Refashion.enums.ProductStatus;
 import lombok.*;
 
 @Getter
@@ -8,5 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ProductAdminRequest {
-    String action; // APPROVE, REJECT, DELETE
+    ProductStatus status; // Chỉ chấp nhận APPROVED hoặc REJECTED
+    String note; // Lý do từ chối nếu cần
 }

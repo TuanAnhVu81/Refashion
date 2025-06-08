@@ -3,6 +3,7 @@ package exe201.Refashion.repository;
 import exe201.Refashion.entity.Categories;
 import exe201.Refashion.entity.Products;
 import exe201.Refashion.entity.Users;
+import exe201.Refashion.enums.ProductStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -37,5 +38,7 @@ public interface ProductRepository extends CrudRepository<Products, String> {
 
     @EntityGraph(attributePaths = {"images"})
     Optional<Products> findWithImagesById(String id);
+
+    List<Products> findByStatus(ProductStatus status);
 
 }

@@ -1,6 +1,7 @@
 package exe201.Refashion.entity;
 
 import exe201.Refashion.enums.ProductCondition;
+import exe201.Refashion.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -75,6 +76,13 @@ public class Products {
     @ManyToMany(mappedBy = "products")
     List<Blog> blogs;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<BlogComment> comments;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    ProductStatus status;
+
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
@@ -86,6 +94,9 @@ public class Products {
         }
         if (isSold == null) {
             isSold = false;
+        }
+        if (status == null) {
+            status = ProductStatus.PENDING;
         }
     }
 }

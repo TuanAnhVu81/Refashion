@@ -3,6 +3,7 @@ package exe201.Refashion.service;
 import exe201.Refashion.dto.request.ProductRequest;
 import exe201.Refashion.dto.response.ProductResponse;
 import exe201.Refashion.entity.*;
+import exe201.Refashion.enums.ProductStatus;
 import exe201.Refashion.exception.AppException;
 import exe201.Refashion.exception.ErrorCode;
 import exe201.Refashion.mapper.ProductMapper;
@@ -56,12 +57,15 @@ public class ProductService {
                 .seller(seller)
                 .isFeatured(Boolean.TRUE.equals(request.getIsFeatured()))
                 .featuredUntil(request.getFeaturedUntil())
+                .status(ProductStatus.PENDING) // 👈 Thêm dòng này
                 .isActive(Boolean.TRUE.equals(request.getIsActive()))
                 .images(new ArrayList<>())
                 .build();
 
         // Thêm ảnh từ URL (FE upload Cloudinary → gửi URL về)
+        // Cập nhật ảnh mới
         if (request.getImageUrls() != null) {
+            product.getImages().clear(); // Xóa ảnh cũ
             for (String url : request.getImageUrls()) {
                 ProductImages image = ProductImages.builder()
                         .imageUrl(url)
@@ -89,7 +93,7 @@ public class ProductService {
         product.setIsActive(request.getIsActive());
         product.setIsFeatured(request.getIsFeatured());
         product.setFeaturedUntil(request.getFeaturedUntil());
-
+        product.setStatus(ProductStatus.PENDING); // ✅ Đánh dấu lại là chờ duyệt
         // Cập nhật ảnh mới
         if (request.getImageUrls() != null) {
             product.getImages().clear(); // Xóa ảnh cũ
@@ -106,7 +110,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> getAllProducts() {
-        return StreamSupport.stream(productRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(productRepository.findByStatus(ProductStatus.APPROVED).spliterator(), false)
                 .map(productMapper::toProductResponse)
                 .toList();
     }

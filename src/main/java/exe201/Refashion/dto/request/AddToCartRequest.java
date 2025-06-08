@@ -3,11 +3,11 @@ package exe201.Refashion.dto.request;
 import lombok.*;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlogCommentRequest {
-    String productId;
+@Builder
+public class AddToCartRequest {
     String userId;
-    String content;
+    String productId;
+    int quantity;
 }

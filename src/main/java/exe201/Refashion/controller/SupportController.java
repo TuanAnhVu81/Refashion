@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @RestController
-@RequestMapping("/api/support")
+@RequestMapping("/support")
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class SupportController {

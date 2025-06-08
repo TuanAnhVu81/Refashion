@@ -27,10 +27,11 @@ public class BlogCommentService {
     UserRepository userRepository;
     BlogCommentRepository blogCommentRepository;
     BlogCommentMapper commentMapper;
+    ProductRepository productRepository;
 
     public BlogCommentResponse addComment(BlogCommentRequest request) {
-        Blog blog = blogRepository.findById(request.getBlogId())
-                .orElseThrow(() -> new AppException(ErrorCode.BLOG_NOT_FOUND));
+        Products product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         Users user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -38,7 +39,7 @@ public class BlogCommentService {
         BlogComment comment = BlogComment.builder()
                 .id(UUID.randomUUID().toString())
                 .content(request.getContent())
-                .blog(blog)
+                .product(product)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -46,8 +47,8 @@ public class BlogCommentService {
         return commentMapper.toResponse(blogCommentRepository.save(comment));
     }
 
-    public List<BlogCommentResponse> getCommentsByBlog(String blogId) {
-        return blogCommentRepository.findByBlogIdOrderByCreatedAtAsc(blogId).stream()
+    public List<BlogCommentResponse> getCommentsByBlog(String productId) {
+        return blogCommentRepository.findByProductIdOrderByCreatedAtAsc(productId).stream()
                 .map(commentMapper::toResponse)
                 .toList();
     }

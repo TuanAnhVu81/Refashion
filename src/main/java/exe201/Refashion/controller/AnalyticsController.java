@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import static lombok.AccessLevel.PRIVATE;
 
 @RestController
-@RequestMapping("/api/admin/analytics")
+@RequestMapping("/admin/analytics")
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class AnalyticsController {

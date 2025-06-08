@@ -46,9 +46,6 @@ public class Blog {
     )
     private List<Products> products;
 
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<BlogComment> comments;
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

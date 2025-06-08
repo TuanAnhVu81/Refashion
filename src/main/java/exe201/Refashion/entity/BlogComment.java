@@ -22,8 +22,8 @@ public class BlogComment {
     String id;
 
     @ManyToOne
-    @JoinColumn(name = "blog_id", nullable = false)
-    Blog blog;
+    @JoinColumn(name = "product_id", nullable = false)
+    Products product;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

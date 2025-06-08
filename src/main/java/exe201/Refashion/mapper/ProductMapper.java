@@ -29,6 +29,7 @@ public interface ProductMapper {
     @Mapping(source = "color", target = "color")
     @Mapping(source = "price", target = "price")
     @Mapping(target = "imageUrls", expression = "java(mapImageUrls(product))") // ✅ map đúng sang DTO
+    @Mapping(source = "status", target = "status")
     ProductResponse toProductResponse(Products product);
 
     default List<String> mapImageUrls(Products product) {

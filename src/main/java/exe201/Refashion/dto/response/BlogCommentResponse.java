@@ -12,6 +12,6 @@ public class BlogCommentResponse {
     private String id;
     private String content;
     private String username;
-    private String blogId;
+    private String productId;
     private LocalDateTime createdAt;
 }

@@ -6,8 +6,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlogCommentRequest {
-    String productId;
+public class CartRequest {
     String userId;
-    String content;
 }

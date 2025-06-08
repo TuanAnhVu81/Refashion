@@ -8,6 +8,6 @@ import org.mapstruct.*;
 public interface BlogCommentMapper {
 
     @Mapping(source = "user.username", target = "username")
-    @Mapping(source = "blog.id", target = "blogId")
+    @Mapping(source = "product.id", target = "productId")
     BlogCommentResponse toResponse(BlogComment comment);
 }

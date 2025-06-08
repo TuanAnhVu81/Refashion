@@ -88,6 +88,13 @@ public class OrderService {
         orderRepository.save(order);
     }
 
+    public List<OrderResponse> getAllOrders() {
+        List<Orders> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(orderMapper::toOrderResponse)
+                .collect(Collectors.toList());
+    }
+
     public OrderHistoryResponse getOrderHistory(String buyerId) {
         List<Orders> orders = orderRepository.findByBuyerId(buyerId);
         List<OrderResponse> orderResponses = orders.stream()

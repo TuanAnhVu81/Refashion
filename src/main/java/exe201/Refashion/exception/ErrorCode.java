@@ -29,6 +29,10 @@ public enum ErrorCode {
     PASSWORD_CONFIRM_NOT_MATCH(1025, "Password confirm not match"),
     INVALID_ROLE(1026, "Invalid role"),
     BLOG_NOT_FOUND(1027, "Blog not found"),
+    INVALID_PRODUCT_STATUS(1028, "Invalid product status"),
+    PRODUCT_ALREADY_REVIEWED(1029, "Product already reviewed"),
+    CART_ALREADY_EXISTS(1030, "Cart already exists"),
+    CART_NOT_FOUND(1031, "Cart not found"),
     ;
 
     ErrorCode(int code, String message) {

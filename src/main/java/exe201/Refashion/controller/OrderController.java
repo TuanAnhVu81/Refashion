@@ -44,6 +44,14 @@ public class OrderController {
                 .build();
     }
 
+    @GetMapping
+    public ApiResponse<List<OrderResponse>> getAllOrders() {
+        List<OrderResponse> orders = orderService.getAllOrders();
+        return ApiResponse.<List<OrderResponse>>builder()
+                .result(orders)
+                .build();
+    }
+
     @GetMapping("/{orderId}/status")
     public ApiResponse<OrderResponse> getOrderStatus(@PathVariable String orderId, @RequestParam String buyerId) {
         OrderResponse order = orderService.getOrderStatus(orderId, buyerId);

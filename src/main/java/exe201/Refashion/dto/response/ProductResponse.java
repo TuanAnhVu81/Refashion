@@ -1,6 +1,7 @@
 package exe201.Refashion.dto.response;
 
 import exe201.Refashion.enums.ProductCondition;
+import exe201.Refashion.enums.ProductStatus;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,4 +29,6 @@ public class ProductResponse {
     List<String> imageUrls; // ✅ Đây là trường đúng cho response
     LocalDateTime createdAt;
     Boolean isActive;
+    ProductStatus status; // 🆕 Thêm trường status
+
 }
