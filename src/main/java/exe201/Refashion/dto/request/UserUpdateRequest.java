@@ -18,4 +18,5 @@ public class UserUpdateRequest {
     String fullName;
     String phoneNumber;
     String address;
+    String profilePicture;
 }

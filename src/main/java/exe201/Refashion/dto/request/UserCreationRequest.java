@@ -15,6 +15,7 @@ public class UserCreationRequest {
     String fullName;
     String phoneNumber;
     String address;
+    String profilePicture;
     String roleId;
     Boolean active;
     @PrePersist

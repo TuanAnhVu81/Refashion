@@ -14,7 +14,7 @@ import java.util.List;
 import static lombok.AccessLevel.PRIVATE;
 
 @RestController
-@RequestMapping("/blogs/comments")
+@RequestMapping("/comments")
 @RequiredArgsConstructor
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 public class BlogCommentController {
@@ -28,10 +28,10 @@ public class BlogCommentController {
                 .build();
     }
 
-    @GetMapping("/{blogId}")
-    public ApiResponse<List<BlogCommentResponse>> getComments(@PathVariable String blogId) {
+    @GetMapping("/{productId}")
+    public ApiResponse<List<BlogCommentResponse>> getComments(@PathVariable String productId) {
         return ApiResponse.<List<BlogCommentResponse>>builder()
-                .result(blogCommentService.getCommentsByBlog(blogId))
+                .result(blogCommentService.getCommentsByProduct(productId))
                 .build();
     }
 }

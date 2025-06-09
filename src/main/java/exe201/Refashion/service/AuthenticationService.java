@@ -83,7 +83,7 @@ public class AuthenticationService {
                 .issuer(user.getId())
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                        Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString()) //JWT ID cho login token
                 .claim("scope", buildScope(user))

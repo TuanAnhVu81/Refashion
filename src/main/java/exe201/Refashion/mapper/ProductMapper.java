@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public interface ProductMapper {
 
     @Mapping(source = "category.name", target = "categoryName")
+    @Mapping(source = "seller.id", target = "sellerId")
     @Mapping(source = "seller.username", target = "sellerUsername")
     @Mapping(source = "isFeatured", target = "isFeatured")
     @Mapping(source = "featuredUntil", target = "featuredUntil")

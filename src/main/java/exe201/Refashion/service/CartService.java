@@ -118,6 +118,7 @@ public class CartService {
     }
 
     // Xoá sản phẩm khỏi giỏ hàng
+    @Transactional
     public void removeProductFromCart(String userId, String productId) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));

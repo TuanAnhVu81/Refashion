@@ -36,8 +36,8 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping("/history")
-    public ApiResponse<OrderHistoryResponse> getOrderHistory(@RequestParam String buyerId) {
+    @GetMapping("/buyer/{buyerId}")
+    public ApiResponse<OrderHistoryResponse> getOrderHistory(@PathVariable String buyerId) {
         OrderHistoryResponse history = orderService.getOrderHistory(buyerId);
         return ApiResponse.<OrderHistoryResponse>builder()
                 .result(history)

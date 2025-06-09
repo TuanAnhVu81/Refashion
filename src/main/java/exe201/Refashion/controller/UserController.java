@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -22,8 +23,8 @@ public class UserController {
 
     UserService userService;
 
-    @PostMapping
-    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();
@@ -118,10 +119,15 @@ public class UserController {
                 .result(userService.getUserProfile(userId))
                 .build();
     }
-    @PutMapping("/{userId}")
-    public ApiResponse<UserResponse> updateUserProfile(@PathVariable String userId, @RequestBody @Valid UserUpdateRequest request) {
+
+    @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResponse<UserResponse> updateUserProfile(
+            @PathVariable String userId,
+            @RequestBody @Valid UserUpdateRequest request
+    ) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUserProfile(userId, request))
                 .build();
     }
+
 }

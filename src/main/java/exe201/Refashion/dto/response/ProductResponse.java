@@ -23,6 +23,7 @@ public class ProductResponse {
     String color;
     BigDecimal price;
     String categoryName;
+    String sellerId;
     String sellerUsername;
     Boolean isFeatured;
     LocalDateTime featuredUntil; // Thêm trường mới

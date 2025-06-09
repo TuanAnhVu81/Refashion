@@ -55,6 +55,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerified(false);
         user.setCreatedAt(LocalDateTime.now());
+        user.setProfilePicture(request.getProfilePicture()); // <-- thêm ở đây
 
         Role role = roleRepository.findById(request.getRoleId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
@@ -150,6 +151,10 @@ public class UserService {
         }
         if (request.getAddress() != null) {
             user.setAddress(request.getAddress());
+        }
+
+        if (request.getProfilePicture() != null) {
+            user.setProfilePicture(request.getProfilePicture());
         }
 
         user = userRepository.save(user);

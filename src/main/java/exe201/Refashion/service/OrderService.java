@@ -51,6 +51,15 @@ public class OrderService {
                 .map(item -> productRepository.findById(item.getProductId())
                         .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND)))
                 .toList();
+        // Validate: tất cả sản phẩm phải cùng 1 seller
+        Users seller = products.get(0).getSeller();
+        boolean sameSeller = products.stream()
+                .allMatch(product -> product.getSeller().getId().equals(seller.getId()));
+
+        if (!sameSeller) {
+            throw new AppException(ErrorCode.MULTIPLE_SELLERS_NOT_ALLOWED); // bạn cần định nghĩa thêm enum này
+        }
+
         BigDecimal totalAmount = products.stream()
                 .map(Products::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -58,6 +67,7 @@ public class OrderService {
         Orders order = Orders.builder()
                 .id(UUID.randomUUID().toString())
                 .buyer(buyer)
+                .seller(seller)
                 .totalAmount(totalAmount)
                 .shippingAddress(orderRequest.getShippingAddress())
                 .status(OrderStatus.PENDING)

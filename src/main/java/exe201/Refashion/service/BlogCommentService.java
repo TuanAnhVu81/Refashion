@@ -47,7 +47,7 @@ public class BlogCommentService {
         return commentMapper.toResponse(blogCommentRepository.save(comment));
     }
 
-    public List<BlogCommentResponse> getCommentsByBlog(String productId) {
+    public List<BlogCommentResponse> getCommentsByProduct(String productId) {
         return blogCommentRepository.findByProductIdOrderByCreatedAtAsc(productId).stream()
                 .map(commentMapper::toResponse)
                 .toList();
