@@ -4,6 +4,7 @@ import exe201.Refashion.dto.request.OrderItemRequest;
 import exe201.Refashion.dto.request.OrderRequest;
 import exe201.Refashion.dto.response.OrderHistoryResponse;
 import exe201.Refashion.dto.response.OrderResponse;
+import exe201.Refashion.entity.OrderItems;
 import exe201.Refashion.enums.OrderStatus;
 import exe201.Refashion.entity.Orders;
 import exe201.Refashion.entity.Products;
@@ -12,6 +13,7 @@ import exe201.Refashion.enums.PaymentStatus;
 import exe201.Refashion.exception.AppException;
 import exe201.Refashion.exception.ErrorCode;
 import exe201.Refashion.mapper.OrderMapper;
+import exe201.Refashion.repository.OrderItemsRepository;
 import exe201.Refashion.repository.OrderRepository;
 import exe201.Refashion.repository.ProductRepository;
 import exe201.Refashion.repository.UserRepository;
@@ -40,28 +42,39 @@ public class OrderService {
     UserRepository userRepository;
     ProductRepository productRepository;
     OrderMapper orderMapper;
+    OrderItemsRepository orderItemsRepository;
 
     @Transactional
     public OrderResponse createOrder(OrderRequest orderRequest) {
         Users buyer = userRepository.findById(orderRequest.getBuyerId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        // Lấy amount(price) của từng sản phẩm rồi tính tổng
+        // Lấy danh sách sản phẩm
         List<Products> products = orderRequest.getItems().stream()
                 .map(item -> productRepository.findById(item.getProductId())
                         .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND)))
                 .toList();
+
+        if (products.isEmpty()) {
+            throw new AppException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+
         // Validate: tất cả sản phẩm phải cùng 1 seller
         Users seller = products.get(0).getSeller();
         boolean sameSeller = products.stream()
                 .allMatch(product -> product.getSeller().getId().equals(seller.getId()));
 
         if (!sameSeller) {
-            throw new AppException(ErrorCode.MULTIPLE_SELLERS_NOT_ALLOWED); // bạn cần định nghĩa thêm enum này
+            throw new AppException(ErrorCode.MULTIPLE_SELLERS_NOT_ALLOWED);
         }
 
-        BigDecimal totalAmount = products.stream()
-                .map(Products::getPrice)
+        // Tính totalAmount
+        BigDecimal totalAmount = orderRequest.getItems().stream()
+                .map(item -> {
+                    Products product = productRepository.findById(item.getProductId())
+                            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                    return product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity() != null ? item.getQuantity() : 1));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         Orders order = Orders.builder()
@@ -75,8 +88,28 @@ public class OrderService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        // Lưu order và các order items (giả sử logic lưu items đã được xử lý)
+        // Lưu order trước
         Orders savedOrder = orderRepository.save(order);
+
+        // Tạo và lưu OrderItems sau khi đã có Orders
+        List<OrderItems> orderItems = orderRequest.getItems().stream()
+                .map(item -> {
+                    Products product = productRepository.findById(item.getProductId())
+                            .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+                    return OrderItems.builder()
+                            .id(UUID.randomUUID().toString()) // Tạo ID cho OrderItems
+                            .order(savedOrder) // Gán order đã lưu
+                            .product(product)
+                            .quantity(item.getQuantity() != null ? item.getQuantity() : 1)
+                            .priceAtPurchase(product.getPrice())
+                            .build();
+                })
+                .collect(Collectors.toList());
+        orderItemsRepository.saveAll(orderItems);
+
+        // Cập nhật orderItems cho savedOrder và lưu lại
+        savedOrder.setOrderItems(orderItems);
+        orderRepository.save(savedOrder); // Lưu lại để cập nhật quan hệ
 
         // Đánh dấu là sold nếu đơn hàng đã được lưu thành công
         Products product = productRepository.findById(orderRequest.getItems().getFirst().getProductId())
@@ -153,6 +186,39 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    public OrderResponse getOrderById(String orderId) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        return orderMapper.toOrderResponse(order);
+    }
+
+    @Transactional
+    public OrderResponse updatePaymentStatus(String orderId, String paymentStatus) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        PaymentStatus newPaymentStatus;
+        try {
+            newPaymentStatus = PaymentStatus.valueOf(paymentStatus.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.INVALID_PAYMENT_STATUS);
+        }
+
+        validatePaymentStatusTransition(order.getPaymentStatus(), newPaymentStatus);
+
+        order.setPaymentStatus(newPaymentStatus);
+        order = orderRepository.save(order);
+
+        return orderMapper.toOrderResponse(order);
+    }
+
+    public List<OrderResponse> getOrdersByProductId(String productId) {
+        List<Orders> orders = orderRepository.findByProductId(productId);
+        return orders.stream()
+                .map(orderMapper::toOrderResponse)
+                .collect(Collectors.toList());
+    }
+
     private void validateStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
         switch (currentStatus) {
             case PENDING:
@@ -175,6 +241,25 @@ public class OrderService {
                 throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
             default:
                 throw new AppException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+    }
+
+    private void validatePaymentStatusTransition(PaymentStatus currentStatus, PaymentStatus newStatus) {
+        switch (currentStatus) {
+            case UNPAID:
+                if (newStatus != PaymentStatus.PAID) {
+                    throw new AppException(ErrorCode.INVALID_PAYMENT_STATUS_TRANSITION);
+                }
+                break;
+            case PAID:
+                if (newStatus != PaymentStatus.REFUNDED) {
+                    throw new AppException(ErrorCode.INVALID_PAYMENT_STATUS_TRANSITION);
+                }
+                break;
+            case REFUNDED:
+                throw new AppException(ErrorCode.INVALID_PAYMENT_STATUS_TRANSITION);
+            default:
+                throw new AppException(ErrorCode.INVALID_PAYMENT_STATUS);
         }
     }
 }

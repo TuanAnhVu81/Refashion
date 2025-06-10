@@ -33,7 +33,9 @@ public enum ErrorCode {
     PRODUCT_ALREADY_REVIEWED(1029, "Product already reviewed"),
     CART_ALREADY_EXISTS(1030, "Cart already exists"),
     CART_NOT_FOUND(1031, "Cart not found"),
-    MULTIPLE_SELLERS_NOT_ALLOWED(1031, "1 Order just for 1 Seller")
+    MULTIPLE_SELLERS_NOT_ALLOWED(1032, "1 Order just for 1 Seller"),
+    INVALID_PAYMENT_STATUS(1033, "Invalid payment status"),
+    INVALID_PAYMENT_STATUS_TRANSITION(1034, "Invalid payment status transition")
     ;
 
     ErrorCode(int code, String message) {

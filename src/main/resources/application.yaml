@@ -5,8 +5,8 @@ server:
 
 spring:
   datasource:
-#    url: "jdbc:mysql://localhost:3306/Refashion"
-    url: jdbc:mysql://refashion-mysql.mysql.database.azure.com:3306/refashion?serverTimezone=UTC&useSSL=true&requireSSL=false
+    url: "jdbc:mysql://localhost:3306/Refashion"
+#    url: jdbc:mysql://refashion-mysql.mysql.database.azure.com:3306/refashion?serverTimezone=UTC&useSSL=true&requireSSL=false
   jpa:
     properties:
       hibernate:

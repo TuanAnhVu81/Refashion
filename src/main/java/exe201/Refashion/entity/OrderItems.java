@@ -27,10 +27,6 @@ public class OrderItems {
     @JoinColumn(name = "product_id")
     Products product;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    Users seller;
-
     @Column(name = "quantity")
     Integer quantity;
 

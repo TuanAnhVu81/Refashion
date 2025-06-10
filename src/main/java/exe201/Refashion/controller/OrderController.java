@@ -72,4 +72,25 @@ public class OrderController {
                 .build();
     }
 
+    @GetMapping("/{orderId}")
+    public ApiResponse<OrderResponse> getOrderById(@PathVariable String orderId) {
+        OrderResponse order = orderService.getOrderById(orderId);
+        return ApiResponse.<OrderResponse>builder()
+                .result(order)
+                .build();
+    }
+
+    @PatchMapping("/{orderId}/payment-status")
+    public ApiResponse<OrderResponse> updatePaymentStatus(@PathVariable String orderId, @RequestParam String paymentStatus) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.updatePaymentStatus(orderId, paymentStatus))
+                .build();
+    }
+
+    @GetMapping("/product/{productId}")
+    public ApiResponse<List<OrderResponse>> getOrdersByProductId(@PathVariable String productId) {
+        return ApiResponse.<List<OrderResponse>>builder()
+                .result(orderService.getOrdersByProductId(productId))
+                .build();
+    }
 }
