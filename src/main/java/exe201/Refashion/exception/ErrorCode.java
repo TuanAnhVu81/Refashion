@@ -37,6 +37,7 @@ public enum ErrorCode {
     INVALID_PAYMENT_STATUS(1033, "Invalid payment status"),
     INVALID_PAYMENT_STATUS_TRANSITION(1034, "Invalid payment status transition"),
     WRONG_PASSWORD(1035, "Wrong password"),
+    UNAUTHORIZED_ACTION(1036, "Unauthorized action")
     ;
 
     ErrorCode(int code, String message) {

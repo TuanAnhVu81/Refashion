@@ -23,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -43,6 +44,7 @@ public class OrderService {
     ProductRepository productRepository;
     OrderMapper orderMapper;
     OrderItemsRepository orderItemsRepository;
+    FileUploadService fileUploadService;
 
     @Transactional
     public OrderResponse createOrder(OrderRequest orderRequest) {
@@ -217,6 +219,54 @@ public class OrderService {
         return orders.stream()
                 .map(orderMapper::toOrderResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public OrderResponse updatePaymentStatusWithImage(String orderId, String paymentStatus, MultipartFile paymentImage) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        PaymentStatus newPaymentStatus = PaymentStatus.valueOf(paymentStatus.toUpperCase());
+        validatePaymentStatusTransition(order.getPaymentStatus(), newPaymentStatus);
+
+        if (paymentImage != null) {
+            String imageUrl = fileUploadService.uploadImage(paymentImage);
+            order.setPaymentScreenshotUrl(imageUrl);
+        }
+        order.setPaymentStatus(newPaymentStatus);
+        orderRepository.save(order);
+        return orderMapper.toOrderResponse(order);
+    }
+
+    @Transactional
+    public OrderResponse updateToShipped(String orderId, MultipartFile packageImage, String sellerId) {
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        if (!order.getSeller().getId().equals(sellerId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED_ACTION);
+        }
+        validateStatusTransition(order.getStatus(), OrderStatus.SHIPPED);
+        if (packageImage != null) {
+            String imageUrl = fileUploadService.uploadImage(packageImage);
+            order.setSellerPackageImageUrl(imageUrl);
+        }
+        order.setStatus(OrderStatus.SHIPPED);
+        orderRepository.save(order);
+        return orderMapper.toOrderResponse(order);
+    }
+
+    @Transactional
+    public OrderResponse confirmDelivered(String orderId, MultipartFile packageImage, String buyerId) {
+        Orders order = orderRepository.findByIdAndBuyerId(orderId, buyerId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        validateStatusTransition(order.getStatus(), OrderStatus.DELIVERED);
+        if (packageImage != null) {
+            String imageUrl = fileUploadService.uploadImage(packageImage);
+            order.setBuyerPackageImageUrl(imageUrl);
+        }
+        order.setStatus(OrderStatus.DELIVERED);
+        orderRepository.save(order);
+        return orderMapper.toOrderResponse(order);
     }
 
     private void validateStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {

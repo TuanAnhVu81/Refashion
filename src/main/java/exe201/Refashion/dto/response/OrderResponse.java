@@ -26,4 +26,7 @@ public class OrderResponse {
     String deliveryTrackingNumber;
     LocalDateTime createdAt;
     List<String> productIds;
+    String paymentScreenshotUrl;
+    String sellerPackageImageUrl;
+    String buyerPackageImageUrl;
 }

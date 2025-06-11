@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -81,9 +82,32 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}/payment-status")
-    public ApiResponse<OrderResponse> updatePaymentStatus(@PathVariable String orderId, @RequestParam String paymentStatus) {
+    public ApiResponse<OrderResponse> updatePaymentStatus(
+            @PathVariable String orderId,
+            @RequestParam String paymentStatus,
+            @RequestPart(required = false) MultipartFile paymentImage) {
         return ApiResponse.<OrderResponse>builder()
-                .result(orderService.updatePaymentStatus(orderId, paymentStatus))
+                .result(orderService.updatePaymentStatusWithImage(orderId, paymentStatus, paymentImage))
+                .build();
+    }
+
+    @PatchMapping("/{orderId}/shipped")
+    public ApiResponse<OrderResponse> updateToShipped(
+            @PathVariable String orderId,
+            @RequestPart MultipartFile packageImage,
+            @RequestParam String sellerId) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.updateToShipped(orderId, packageImage, sellerId))
+                .build();
+    }
+
+    @PatchMapping("/{orderId}/delivered")
+    public ApiResponse<OrderResponse> confirmDelivered(
+            @PathVariable String orderId,
+            @RequestPart MultipartFile packageImage,
+            @RequestParam String buyerId) {
+        return ApiResponse.<OrderResponse>builder()
+                .result(orderService.confirmDelivered(orderId, packageImage, buyerId))
                 .build();
     }
 

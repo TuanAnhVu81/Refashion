@@ -47,12 +47,20 @@ public class Orders {
     @Column(name = "payment_status")
     PaymentStatus paymentStatus;
 
-
     @Column(name = "delivery_tracking_number")
     String deliveryTrackingNumber;
 
     @Column(name = "created_at")
     LocalDateTime createdAt;
+
+    @Column(name = "payment_screenshot_url")
+    String paymentScreenshotUrl;
+
+    @Column(name = "seller_package_image_url")
+    String sellerPackageImageUrl;
+
+    @Column(name = "buyer_package_image_url")
+    String buyerPackageImageUrl;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItems> orderItems;
