@@ -22,8 +22,8 @@ public class MessageController {
     MessageService messageService;
 
     @PostMapping("/send")
-    public ApiResponse<MessageResponse> sendMessage(@RequestParam String senderId, @RequestParam String receiverId, @RequestBody MessageRequest request) {
-        MessageResponse message = messageService.sendMessage(senderId, receiverId, request);
+    public ApiResponse<MessageResponse> sendMessage(@RequestBody MessageRequest request) {
+        MessageResponse message = messageService.sendMessage(request.getSenderId(), request.getReceiverId(), request);
         return ApiResponse.<MessageResponse>builder()
                 .result(message)
                 .build();
@@ -37,8 +37,8 @@ public class MessageController {
     }
 
     @PostMapping("/read")
-    public ApiResponse<Void> markAsRead(@RequestParam String senderId, @RequestParam String receiverId) {
-        messageService.markMessagesAsRead(senderId, receiverId);
+    public ApiResponse<Void> markAsRead(@RequestBody MessageRequest request) {
+        messageService.markMessagesAsRead(request.getSenderId(), request.getReceiverId());
         return ApiResponse.<Void>builder().build();
     }
 

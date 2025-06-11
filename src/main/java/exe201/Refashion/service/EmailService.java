@@ -116,4 +116,25 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    public void sendProductApprovalEmail(String toEmail, String productName) {
+        String subject = "Sản phẩm của bạn đã được duyệt!";
+        String content = String.format(
+                "<p>Xin chào,</p>" +
+                        "<p>Sản phẩm <strong>%s</strong> của bạn đã được duyệt và hiện đã hiển thị trên nền tảng.</p>" +
+                        "<p>Trân trọng,<br/>Refashion Team</p>", productName
+        );
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(content, true); // true = gửi HTML
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Gửi email thất bại", e);
+        }
+    }
 }

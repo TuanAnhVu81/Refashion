@@ -34,6 +34,7 @@ public class ProductAdminService {
     ProductMapper productMapper;
     CategoryRepository categoryRepository;
     UserRepository userRepository;
+    EmailService emailService;
 
     public ProductResponse createProductByAdmin(ProductRequest request) {
         Categories category = categoryRepository.findById(request.getCategoryId())
@@ -95,22 +96,24 @@ public class ProductAdminService {
 
     @Transactional
     public ProductAdminResponse reviewProduct(String productId, ProductAdminRequest request) {
+        // Lấy sản phẩm từ DB
         Products product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        // Chỉ cho phép review sản phẩm nếu đang ở trạng thái PENDING
+        // Chỉ cho phép review nếu đang ở trạng thái PENDING
         if (product.getStatus() != ProductStatus.PENDING) {
             throw new AppException(ErrorCode.PRODUCT_ALREADY_REVIEWED);
         }
 
-        // Chỉ chấp nhận chuyển sang APPROVED hoặc REJECTED
+        // Kiểm tra trạng thái hợp lệ
         if (request.getStatus() != ProductStatus.APPROVED && request.getStatus() != ProductStatus.REJECTED) {
             throw new AppException(ErrorCode.INVALID_PRODUCT_STATUS);
         }
 
+        // Cập nhật trạng thái sản phẩm
         product.setStatus(request.getStatus());
 
-        // Optional: cập nhật báo cáo nếu có
+        // Cập nhật trạng thái các báo cáo liên quan (nếu có)
         List<Reports> pendingReports = reportsRepository.findPendingReportsByProductId(productId);
         for (Reports report : pendingReports) {
             report.setStatus(request.getStatus() == ProductStatus.APPROVED
@@ -118,9 +121,18 @@ public class ProductAdminService {
                     : "VIOLATION_CONFIRMED");
         }
 
+        // Lưu lại thay đổi
         productRepository.save(product);
         reportsRepository.saveAll(pendingReports);
 
+        // Gửi email nếu sản phẩm được duyệt
+        if (request.getStatus() == ProductStatus.APPROVED) {
+            String sellerEmail = product.getSeller().getEmail();
+            String productName = product.getTitle();
+            emailService.sendProductApprovalEmail(sellerEmail, productName);
+        }
+
+        // Trả về phản hồi cho admin
         return ProductAdminResponse.builder()
                 .productId(product.getId())
                 .status(product.getStatus().name())
