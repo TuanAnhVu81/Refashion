@@ -7,6 +7,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface BlogCommentMapper {
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "user.username", target = "username")
     @Mapping(source = "product.id", target = "productId")
     BlogCommentResponse toResponse(BlogComment comment);

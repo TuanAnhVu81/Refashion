@@ -8,6 +8,7 @@ import exe201.Refashion.exception.ErrorCode;
 import exe201.Refashion.mapper.BlogCommentMapper;
 import exe201.Refashion.repository.*;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class BlogCommentService {
     BlogCommentMapper commentMapper;
     ProductRepository productRepository;
 
+    @Transactional
     public BlogCommentResponse addComment(BlogCommentRequest request) {
         Products product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -37,12 +39,13 @@ public class BlogCommentService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         BlogComment comment = BlogComment.builder()
-                .id(UUID.randomUUID().toString())
                 .content(request.getContent())
                 .product(product)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .build();
+        System.out.println("Comment user: " + comment.getUser().getId());
+        System.out.println("Comment product: " + comment.getProduct().getId());
 
         return commentMapper.toResponse(blogCommentRepository.save(comment));
     }
