@@ -36,7 +36,7 @@ public class ProductService {
     ProductMapper productMapper;
 
 //    String uploadDir = "E:\\SEMESTER 8\\EXE201\\BE\\uploads\\products\\";
-    String uploadDir = System.getProperty("user.dir") + "/uploads/products/";
+//    String uploadDir = System.getProperty("user.dir") + "/uploads/products/";
 
     public ProductResponse createProduct(ProductRequest request) {
         Categories category = categoryRepository.findById(request.getCategoryId())

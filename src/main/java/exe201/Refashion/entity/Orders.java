@@ -2,7 +2,6 @@ package exe201.Refashion.entity;
 
 import exe201.Refashion.enums.OrderStatus;
 import exe201.Refashion.enums.PaymentStatus;
-import exe201.Refashion.enums.TransactionStatus;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
@@ -22,6 +21,7 @@ import java.util.List;
 @Table(name = "Orders")
 public class Orders {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     String id;
 
@@ -53,6 +53,9 @@ public class Orders {
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<OrderItems> orderItems;
+
     @Column(name = "payment_screenshot_url")
     String paymentScreenshotUrl;
 
@@ -62,6 +65,7 @@ public class Orders {
     @Column(name = "buyer_package_image_url")
     String buyerPackageImageUrl;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItems> orderItems;
+    @Column(name = "admin_payment_screenshot_url")
+    String adminPaymentScreenshotUrl;
+
 }

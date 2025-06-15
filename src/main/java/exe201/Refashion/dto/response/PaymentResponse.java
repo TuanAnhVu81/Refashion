@@ -1,6 +1,6 @@
 package exe201.Refashion.dto.response;
 
-import exe201.Refashion.enums.TransactionStatus;
+import exe201.Refashion.enums.PaymentStatus;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class PaymentResponse {
     String transactionId;
     BigDecimal amount;
     String status;
-    TransactionStatus escrowStatus;
+    PaymentStatus paymentStatus;
     String shippingCarrier;
     String trackingNumber;
     LocalDateTime paidAt;

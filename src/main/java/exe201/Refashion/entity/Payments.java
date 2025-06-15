@@ -1,6 +1,6 @@
 package exe201.Refashion.entity;
 
-import exe201.Refashion.enums.TransactionStatus;
+import exe201.Refashion.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -41,8 +41,8 @@ public class Payments {
     LocalDateTime paidAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "escrow_status")
-    TransactionStatus escrowStatus;
+    @Column(name = "payment_status")
+    PaymentStatus paymentStatus;
 
     @Column(name = "shipping_carrier")
     String shippingCarrier;

@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
-    String id;
+    String orderId;
     String buyerId;
     String sellerId;
     BigDecimal totalAmount;
@@ -28,5 +28,5 @@ public class OrderResponse {
     List<String> productIds;
     String paymentScreenshotUrl;
     String sellerPackageImageUrl;
-    String buyerPackageImageUrl;
+    String buyerPackageImageUrl;// Thay thế images bằng URL ảnh thanh toán
 }

@@ -47,6 +47,7 @@ public class CartController {
 //                .build();
 //    }
 
+    //User
     @PostMapping("/add")
     public ApiResponse<String> addToCart(@RequestBody AddToCartRequest request) {
         cartService.addProductToCart(request);
@@ -55,6 +56,7 @@ public class CartController {
                 .build();
     }
 
+    //User
     @GetMapping("/{userId}")
     public ApiResponse<CartResponse> getCart(@PathVariable String userId) {
         return ApiResponse.<CartResponse>builder()
@@ -62,6 +64,7 @@ public class CartController {
                 .build();
     }
 
+    //User
     @DeleteMapping("/{userId}/remove/{productId}")
     public ApiResponse<String> removeFromCart(@PathVariable String userId, @PathVariable String productId) {
         cartService.removeProductFromCart(userId, productId);

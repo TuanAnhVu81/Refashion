@@ -1,5 +1,6 @@
 package exe201.Refashion.entity;
 
+import exe201.Refashion.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "FeaturedPayments")
-public class FeaturedPayment { //Cho việc trả phí để đưa món hàng lên đầu trang khi người dùng tìm kiếm
+public class FeaturedPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -36,10 +37,20 @@ public class FeaturedPayment { //Cho việc trả phí để đưa món hàng l�
     LocalDateTime paymentDate;
 
     @Column(name = "duration_days")
-    Integer durationDays; // Số ngày nổi bật
+    Integer durationDays;
+
+    @Column(name = "transfer_proof_image_url")
+    String transferProofImageUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    PaymentStatus status;
 
     @PrePersist
     public void prePersist() {
         paymentDate = LocalDateTime.now();
+        if (status == null) {
+            status = PaymentStatus.PENDING;
+        }
     }
 }

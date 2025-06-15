@@ -53,7 +53,7 @@ public class SubscriptionService {
             throw new RuntimeException("Only active subscriptions can be canceled");
         }
 
-        subscription.setStatus("CANCELED");
+        subscription.setStatus("CANCELLED");
         subscriptionsRepository.save(subscription);
     }
 

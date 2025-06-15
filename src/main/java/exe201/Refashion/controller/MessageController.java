@@ -21,6 +21,7 @@ public class MessageController {
 
     MessageService messageService;
 
+    //User
     @PostMapping("/send")
     public ApiResponse<MessageResponse> sendMessage(@RequestBody MessageRequest request) {
         MessageResponse message = messageService.sendMessage(request.getSenderId(), request.getReceiverId(), request);
@@ -29,6 +30,7 @@ public class MessageController {
                 .build();
     }
 
+    //User
     @GetMapping("/conversation")
     public ApiResponse<List<MessageResponse>> getConversation(@RequestParam String userId1, @RequestParam String userId2) {
         return ApiResponse.<List<MessageResponse>>builder()
@@ -36,12 +38,14 @@ public class MessageController {
                 .build();
     }
 
+    //User
     @PostMapping("/read")
     public ApiResponse<Void> markAsRead(@RequestBody MessageRequest request) {
         messageService.markMessagesAsRead(request.getSenderId(), request.getReceiverId());
         return ApiResponse.<Void>builder().build();
     }
 
+    //User
     @GetMapping("/partners")
     public ApiResponse<List<UserResponse>> getChatPartners(@RequestParam String userId) {
         return ApiResponse.<List<UserResponse>>builder()

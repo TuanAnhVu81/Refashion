@@ -21,6 +21,7 @@ public class BlogCommentController {
 
     BlogCommentService blogCommentService;
 
+    //User
     @PostMapping
     public ApiResponse<BlogCommentResponse> addComment(@RequestBody BlogCommentRequest request) {
         return ApiResponse.<BlogCommentResponse>builder()
@@ -28,6 +29,7 @@ public class BlogCommentController {
                 .build();
     }
 
+    //User
     @GetMapping("/{productId}")
     public ApiResponse<List<BlogCommentResponse>> getComments(@PathVariable String productId) {
         return ApiResponse.<List<BlogCommentResponse>>builder()

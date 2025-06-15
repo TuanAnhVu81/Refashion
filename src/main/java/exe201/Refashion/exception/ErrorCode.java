@@ -37,7 +37,14 @@ public enum ErrorCode {
     INVALID_PAYMENT_STATUS(1033, "Invalid payment status"),
     INVALID_PAYMENT_STATUS_TRANSITION(1034, "Invalid payment status transition"),
     WRONG_PASSWORD(1035, "Wrong password"),
-    UNAUTHORIZED_ACTION(1036, "Unauthorized action")
+    UNAUTHORIZED_ACTION(1036, "Unauthorized action"),
+    SELLER_MISMATCH(1037, "Seller mismatch"),
+    INVALID_IMAGE_URL(1038, "Invalid image url"),
+    INVALID_RATING(1039, "Invalid rating"),
+    RATING_ALREADY_EXISTS(1040, "Rating already exists"),
+    RATING_NOT_FOUND(1041, "Rating not found"),
+    IMAGE_URL_REQUIRED(1042, "Image url is required"),
+    INVALID_DURATION(1043, "Invalid duration"),
     ;
 
     ErrorCode(int code, String message) {

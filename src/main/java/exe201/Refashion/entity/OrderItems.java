@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 @Table(name = "OrderItems")
 public class OrderItems {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     String id;
 

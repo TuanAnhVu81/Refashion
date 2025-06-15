@@ -17,4 +17,5 @@ public class OrderRequest {
     String sellerId;
     String shippingAddress;
     List<OrderItemRequest> items;
+    List<String> paymentImageUrls; // New field for payment images
 }

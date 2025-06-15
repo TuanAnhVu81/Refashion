@@ -1,16 +1,23 @@
 package exe201.Refashion.dto.response;
 
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeaturedPaymentResponse {
-    private String id;
-    private String productId;
-    private String sellerId;
-    private BigDecimal amount;
-    private Integer durationDays;
-    private LocalDateTime paymentDate;
+    String id;
+    String productId;
+    String sellerId;
+    BigDecimal amount;
+    Integer durationDays;
+    LocalDateTime paymentDate;
+    String transferProofImageUrl;
+    String status;
 }

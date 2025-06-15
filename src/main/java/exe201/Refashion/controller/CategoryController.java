@@ -20,6 +20,7 @@ public class CategoryController {
 
     CategoryService categoryService;
 
+    //Admin
     @PostMapping
     public ApiResponse<CategoryResponse> createCategory(@RequestBody @Valid CategoryRequest request) {
         return ApiResponse.<CategoryResponse>builder()
@@ -27,6 +28,7 @@ public class CategoryController {
                 .build();
     }
 
+    //Admin, User
     @GetMapping
     public ApiResponse<List<CategoryResponse>> getAllCategories() {
         return ApiResponse.<List<CategoryResponse>>builder()
@@ -34,6 +36,7 @@ public class CategoryController {
                 .build();
     }
 
+    //Admin, User
     @GetMapping("/{id}")
     public ApiResponse<CategoryResponse> getCategoryById(@PathVariable String id) {
         return ApiResponse.<CategoryResponse>builder()
@@ -41,6 +44,7 @@ public class CategoryController {
                 .build();
     }
 
+    //Admin
     @PutMapping("/{id}")
     public ApiResponse<CategoryResponse> updateCategory(@PathVariable String id, @RequestBody @Valid CategoryRequest request) {
         return ApiResponse.<CategoryResponse>builder()
@@ -48,6 +52,7 @@ public class CategoryController {
                 .build();
     }
 
+    //Admin
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteCategory(@PathVariable String id) {
         categoryService.deleteCategory(id);
